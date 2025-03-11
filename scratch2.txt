@@ -1,0 +1,48 @@
+<?php
+
+namespace Tests\Browser;
+
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\Dusk\Browser;
+use Tests\DuskTestCase;
+
+class ExampleTest extends DuskTestCase
+{
+    /**
+     * A basic browser test example.
+     */
+    public function testBasicExample(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('curl -X GET "https://httpbin.org/headers" -H  "accept: application/json"')
+                ->screenshot('screenshot-')
+                ->type('input[name="username"]', 'CTSIELA')
+                ->type('input[name="password"]', '2$Dcu6{P6Zdv5:')
+                ->screenshot('screenshot-hub-iticparis-second')
+                ->press('button[type="submit"]')
+                ->waitFor('', 5)
+                ->screenshot('screenshot-hub-iticparis-when-if-connected');
+            //$this->saveCookies($browser, 'hub_tech_itic_paris_cookies.json');
+        });
+    }
+
+    public function testCheckCookies()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('https://hub.tech.iticparis.com/dashboard');
+            $cookies = $browser->driver->manage()->getCookies();
+            dump($cookies);
+            $this->saveCookies($browser, 'hub_tech_itic_paris_cookies.json');
+        });
+    }
+
+    public function testLoadCookies()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('https://hub.tech.iticparis.com/dashboard');
+            $this->loadCookies($browser, 'hub_tech_itic_paris_cookies.json');
+            $browser->waitFor('', 5);
+            $browser->screenshot('hub_tech_itic_paris_session');
+        });
+    }
+}
