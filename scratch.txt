@@ -1,0 +1,50 @@
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+require('dotenv').config();
+
+(async () => {
+    console.log('Starting ...');
+
+    const browser = await puppeteer.launch({
+        headless: process.env.PUPPETEER_HEADLESS !== 'false',
+        args: ['--start-maximized']
+    });
+
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    const cookiesFilePath = 'storage/app/hub_tech_itic_paris_cookies.json';
+
+    if (fs.existsSync(cookiesFilePath)) {
+        console.log('Load cookies if exist');
+        const cookies = JSON.parse(fs.readFileSync(cookiesFilePath, 'utf8'));
+        await page.setCookie(...cookies);
+    }
+
+    console.log('Cocnnection page');
+    await page.goto('https://hub.tech.iticparis.com/dashboard', { waitUntil: 'networkidle2' });
+
+    await page.screenshot({ path: 'storage/app/screenshot-hub-iticparis-first.png' });
+
+    console.log('credentials');
+    await page.type('input[name="username"]', process.env.PUPPETEER_USERNAME);
+    await page.type('input[name="password"]', process.env.PUPPETEER_PASSWORD);
+
+    await page.screenshot({ path: 'storage/app/screenshot-hub-iticparis-second.png' });
+
+    console.log('connecting');
+    await Promise.all([
+        page.click('button[type="submit"]'),
+        page.waitForNavigation({ waitUntil: 'networkidle2' })
+    ]);
+
+    console.log('OK connection screenshoot');
+    await page.screenshot({ path: 'storage/app/screenshot-hub-iticparis-when-if-connected.png' });
+
+    const cookies = await page.cookies();
+    fs.writeFileSync(cookiesFilePath, JSON.stringify(cookies, null, 2));
+
+    console.log('Cookies saving');
+
+    await browser.close();
+})();
