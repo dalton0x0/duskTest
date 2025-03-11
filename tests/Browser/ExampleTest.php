@@ -14,7 +14,7 @@ class ExampleTest extends DuskTestCase
     public function testBasicExample(): void
     {
         $this->browse(function (Browser $browser) {
-            $browser->visit('https://iticparis.ymag.cloud/index.php/')
+            $browser->visit('https://websiteTovisit.go')
                 ->waitFor('', 5)
                 ->screenshot('screenshot-login')
                 ->type('input[name="login"]', '')
