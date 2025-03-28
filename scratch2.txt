@@ -16,8 +16,8 @@ class ExampleTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->visit('curl -X GET "https://httpbin.org/headers" -H  "accept: application/json"')
                 ->screenshot('screenshot-')
-                ->type('input[name="username"]', 'CTSIELA')
-                ->type('input[name="password"]', '2$Dcu6{P6Zdv5:')
+                ->type('input[name="username"]', 'username')
+                ->type('input[name="password"]', 'your-password')
                 ->screenshot('screenshot-hub-iticparis-second')
                 ->press('button[type="submit"]')
                 ->waitFor('', 5)
